@@ -27,7 +27,7 @@ Antes de iniciar, você precisa ter os seguintes requisitos instalados:
 ### Passo 1: Clone o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/rpg-universal-sheet-api.git
+git clone https://github.com/Gustavo-Vinicius-Santana/rpg-universal-sheet-api.git
 cd rpg-universal-sheet-api
 ```
 
