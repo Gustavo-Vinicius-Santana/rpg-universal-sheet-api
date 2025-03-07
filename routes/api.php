@@ -10,3 +10,6 @@ Route::get('/user', [UserController::class, 'index'])->middleware(FirebaseAuthMi
 
 Route::post('/register', [FirebaseAuthController::class, 'register']);
 Route::post('/login', [FirebaseAuthController::class, 'login']);
+
+Route::post('/change-password', [FirebaseAuthController::class, 'changePassword']);
+Route::post('/change-email', [FirebaseAuthController::class, 'changeEmail'])->middleware(FirebaseAuthMiddleware::class);

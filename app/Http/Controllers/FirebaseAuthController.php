@@ -54,4 +54,45 @@ class FirebaseAuthController extends Controller
             return response()->json(['error' => 'E-mail ou senha incorretos'], 401);
         }
     }
+
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $userEmail = $request->email;
+
+        try {
+            $updatedUser = $this->auth->sendPasswordResetLink($userEmail);
+            return response()->json(['message' => 'E-mail de redefinição de senha enviado com sucesso'], 200);
+        }
+        catch (AuthException | FirebaseException $e) {
+            return response()->json(['error' => 'Erro ao atualizar e-mail', 'erro' => $e->getMessage()], 500);
+        }
+    }
+
+    public function changeEmail(Request $request)
+    {
+        $request->validate([
+            'newEmail' => 'required|email',
+        ]);
+
+        $userEmail = $request->newEmail;
+        $firebaseUser = $request->attributes->get('firebase_user');
+
+        if ($firebaseUser) {
+            $uid = $firebaseUser->uid;
+            
+            try {
+                $updatedUser = $this->auth->changeUserEmail($uid, $userEmail);
+                return response()->json(['message' => 'E-mail atualizado com sucesso!', 'user' => $updatedUser], 200);
+            }
+            catch (AuthException | FirebaseException $e) {
+                return response()->json(['error' => 'Erro ao atualizar e-mail', 'erro' => $e->getMessage()], 500);
+            }
+        }
+
+        return response()->json(['message' => 'Usuário não encontrado'], 404);
+    }
 }
