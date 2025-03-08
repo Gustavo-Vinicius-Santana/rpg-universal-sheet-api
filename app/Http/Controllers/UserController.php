@@ -3,13 +3,20 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Services\UserService;
 
 class UserController extends Controller
 {
+    private UserService $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
     public function index(Request $request)
     {
-        // Obtém o usuário Firebase do middleware
-        $firebaseUser = $request->attributes->get('firebase_user');
+        $firebaseUser = $this->userService->index($request);
 
         if ($firebaseUser) {
             return response()->json(['user' => $firebaseUser]);

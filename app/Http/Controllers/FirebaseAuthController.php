@@ -7,30 +7,42 @@ use Kreait\Firebase\Contract\Auth;
 use Kreait\Firebase\Exception\Auth\EmailExists;
 use Kreait\Firebase\Exception\AuthException;
 use Kreait\Firebase\Exception\FirebaseException;
-use Kreait\Firebase\Factory;
+use App\Services\UserService;
+use App\Services\AuthService;
 
 class FirebaseAuthController extends Controller
 {
     protected $auth;
+    protected $userService;
+    protected $authService;
 
-    public function __construct(Auth $auth)
+    public function __construct(Auth $auth, UserService $userService, AuthService $authService)
     {
         $this->auth = $auth;
+        $this->userService = $userService;
+        $this->authService = $authService;
     }
 
     public function register(Request $request)
     {
         $request->validate([
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'type_acount' => 'required',
             'email' => 'required|email',
             'password' => 'required|min:6'
         ]);
 
+        $newUser = [
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'type_acount' => $request->type_acount
+        ];
+
         try {
-            $user = $this->auth->createUserWithEmailAndPassword($request->email, $request->password);
-            return response()->json(['message' => 'Usuário criado com sucesso!', 'user' => $user], 201);
-        } catch (EmailExists $e) {
-            return response()->json(['error' => 'E-mail já cadastrado!'], 400);
-        } catch (AuthException | FirebaseException $e) {
+            $newUser = $this->userService->create($request->all());
+            return response()->json(['message' => 'Usuário criado com sucesso!', 'user' => $newUser], 201);
+        }catch (\Exception $e) {
             return response()->json(['error' => 'Erro ao criar usuário', 'erro' => $e->getMessage()], 500);
         }
     }
@@ -42,17 +54,13 @@ class FirebaseAuthController extends Controller
             'password' => 'required|min:6'
         ]);
 
-        try {
-            $signInResult = $this->auth->signInWithEmailAndPassword($request->email, $request->password);
-            $idToken = $signInResult->idToken(); // Token JWT do Firebase
+        $signInResult = $this->authService->login($request->email, $request->password);
 
-            return response()->json([
-                'message' => 'Login realizado com sucesso!',
-                'token' => $idToken
-            ]);
-        } catch (AuthException | FirebaseException $e) {
-            return response()->json(['error' => 'E-mail ou senha incorretos'], 401);
+        if ($signInResult['success'] === false) {
+            return response()->json(['error' => $signInResult['message'], 'erro' => $signInResult['erro']], 401);
         }
+
+        return response()->json(['token' => $signInResult['token']], 200);
     }
 
     public function changePassword(Request $request)
@@ -63,13 +71,13 @@ class FirebaseAuthController extends Controller
 
         $userEmail = $request->email;
 
-        try {
-            $updatedUser = $this->auth->sendPasswordResetLink($userEmail);
-            return response()->json(['message' => 'E-mail de redefinição de senha enviado com sucesso'], 200);
+        $resultEmail = $this->authService->changePassword($userEmail);
+
+        if ($resultEmail['success'] === false) {
+            return response()->json(['error' => $resultEmail['message'], 'erro' => $resultEmail['erro']], 401);
         }
-        catch (AuthException | FirebaseException $e) {
-            return response()->json(['error' => 'Erro ao atualizar e-mail', 'erro' => $e->getMessage()], 500);
-        }
+
+        return response()->json(['message' => $resultEmail['message']], 200);
     }
 
     public function changeEmail(Request $request)
@@ -83,14 +91,14 @@ class FirebaseAuthController extends Controller
 
         if ($firebaseUser) {
             $uid = $firebaseUser->uid;
-            
-            try {
-                $updatedUser = $this->auth->changeUserEmail($uid, $userEmail);
-                return response()->json(['message' => 'E-mail atualizado com sucesso!', 'user' => $updatedUser], 200);
+
+            $resultEmail = $this->authService->changeEmail($uid, $userEmail);
+
+            if ($resultEmail['success'] === false) {
+                return response()->json(['error' => $resultEmail['message'], 'erro' => $resultEmail['erro']], 401);
             }
-            catch (AuthException | FirebaseException $e) {
-                return response()->json(['error' => 'Erro ao atualizar e-mail', 'erro' => $e->getMessage()], 500);
-            }
+
+            return response()->json(['message' => $resultEmail['message']], 200);
         }
 
         return response()->json(['message' => 'Usuário não encontrado'], 404);
