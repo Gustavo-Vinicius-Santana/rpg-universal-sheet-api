@@ -23,13 +23,41 @@ class UserRepository
         return User::create($newUser);
     }
 
-    public function update(User $user, array $data)
+    public function update(String $uid, array $data)
     {
-        //
+        $user = User::where('uid', $uid)->first();
+
+        if (!$user) {
+            return [
+                'success' => false,
+                'message' => 'Usuário nao encontrado'
+            ];
+        }
+
+        $user->update($data);
+
+        return [
+            'success' => true,
+            'message' => 'Usuário atualizado com sucesso!'
+        ];
     }
 
-    public function delete(User $user)
+    public function delete(String $uid)
     {
-        //
+        $user = User::where('uid', $uid)->first();
+
+        if (!$user) {
+            return [
+                'success' => false,
+                'message' => 'Usuário nao encontrado'
+            ];
+        }
+
+        $user->delete();
+
+        return [
+            'success' => true,
+            'message' => 'Usuário deletado com sucesso'
+        ];
     }
 }

@@ -53,13 +53,42 @@ class UserService
         return $this->repository->create($newUser);
     }
 
-    public function update(User $user, array $data)
+    public function update(String $uid, array $data)
     {
-        //
+        $updteDataUser = [
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+        ];
+
+        $editUser = $this->repository->update($uid, $updteDataUser);
+
+        if($editUser['success'] === false) {
+            return [
+                'success' => false,
+                'message' => $editUser['message'],
+                'erro' => $editUser['erro']
+            ];
+        }
+
+        return [
+            'success' => true,
+            'message' => 'Usuário atualizado com sucesso!'];
     }
 
-    public function delete(User $user)
+    public function delete(String $user)
     {
-        //
+        $userDeleting = $this->repository->delete($user);
+
+        if($userDeleting['success'] === false) {
+            return [
+                'success' => false,
+                'message' => $userDeleting['message'],
+            ];
+        }
+
+        return [
+            'success' => true,
+            'message' => 'Usuário deletado com sucesso'
+        ];
     }
 }

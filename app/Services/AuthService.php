@@ -96,4 +96,22 @@ class AuthService
             ];
         }
     }
+
+    public function delete(String $uid)
+    {
+        try {
+            $this->auth->deleteUser($uid);
+            return [
+                'success' => true,
+                'message' => 'Usuário deletado com sucesso'
+            ];
+        }
+        catch (AuthException | FirebaseException $e) {
+            return [
+                'success' => false,
+                'message' => 'Erro ao deletar usuário',
+                'erro' => $e->getMessage()
+            ];
+        }
+    }
 }
