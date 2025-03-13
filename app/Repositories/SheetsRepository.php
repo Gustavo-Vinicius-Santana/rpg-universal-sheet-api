@@ -6,12 +6,14 @@ use App\Models\Sheet;
 
 class SheetsRepository
 {
-    public function getSheet(int $id)
+    public function getSheet(int $id, String $uid)
     {
+        $sheet = Sheet::where('id', $id)->where('player_uid', $uid)->first();
+
         try{
             return [
                 'success' => true,
-                'sheet' => Sheet::find($id)->toArray()
+                'sheet' => $sheet ? $sheet->toArray() : null
             ];
         } catch (\Exception $e) {
             return [

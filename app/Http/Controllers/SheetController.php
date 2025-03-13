@@ -33,10 +33,12 @@ class SheetController extends Controller
             'id' => 'required'
         ]);
 
-        $getSheet = $this->sheetsService->getSheet($request->id);
+        $firebaseUser = $request->attributes->get('firebase_user');
+
+        $getSheet = $this->sheetsService->getSheet($request->id, $firebaseUser->uid);
 
         if($getSheet['success'] === false) {
-            return response()->json(['error' => $getSheet['message'], 'erro' => $getSheet['erro']], 401);
+            return response()->json(['error' => 'erro ao buscar ficha', 'erro' => $getSheet['erro']], 401);
         }
 
         return response()->json(['sheet' => $getSheet['sheet']], 200);

@@ -31,18 +31,22 @@ class SheetsService
         ];
     }
 
-    public function getSheet(int $id)
+    public function getSheet(int $id, String $uid)
     {
-        $seekingSheet = $this->sheetsRepository->getSheet($id);
+        $seekingSheet = $this->sheetsRepository->getSheet($id, $uid);
 
         if ($seekingSheet['success'] === false) {
-            return $seekingSheet['erro'];
+            return [
+                'success' => false,
+                'message' => 'Erro no banco de dados',
+                'erro' => $seekingSheet['erro']
+            ];
         }
 
         if ($seekingSheet['sheet'] === null) {
             return [
                 'success' => false,
-                'message' => 'Ficha nao encontrada'
+                'erro' => 'Ficha não encontrada'
             ];
         }
 
