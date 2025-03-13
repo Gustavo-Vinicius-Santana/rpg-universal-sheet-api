@@ -16,10 +16,12 @@ return new class extends Migration {
         Schema::create('sheets', function (Blueprint $table) {
             $table->id(); // Chave primária
             $table->string('model_name'); // Nome do modelo
-            $table->uuid('player_uid'); // UID do jogador
+            $table->string('player_uid'); // UID do jogador
             $table->jsonb('data'); // Dados do jogador em JSON
             $table->foreignId('system_id')->constrained('sistem_rpg_models_sheet')->onDelete('cascade'); // FK para sistema de RPG
             $table->timestamps();
+
+            $table->foreign('player_uid')->references('uid')->on('users')->onDelete('cascade');
         });
     }
 

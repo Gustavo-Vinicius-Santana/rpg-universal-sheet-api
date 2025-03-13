@@ -15,8 +15,19 @@ class Sheet extends Model
         'data' => 'array',
     ];
 
+    /**
+     * Relacionamento com o sistema de RPG.
+     */
     public function system()
     {
         return $this->belongsTo(SistemRpgModelsSheet::class, 'system_id');
+    }
+
+    /**
+     * Relacionamento com o usuário (Firebase).
+     */
+    public function player()
+    {
+        return $this->belongsTo(User::class, 'player_uid', 'player_uid');
     }
 }
