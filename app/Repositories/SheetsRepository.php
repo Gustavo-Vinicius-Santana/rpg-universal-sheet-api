@@ -53,7 +53,8 @@ class SheetsRepository
         ];
 
         try{
-            return Sheet::create($newSheet);
+            $sheet = Sheet::create($newSheet);
+            return $sheet;
         } catch (\Exception $e) {
             return [
                 'success' => false,

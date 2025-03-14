@@ -62,6 +62,7 @@ class SheetController extends Controller
         ];
 
         $creatingSheet = $this->sheetsService->create($newSheet);
+        dd($creatingSheet);
 
         if($creatingSheet['success'] === false) {
             return response()->json(['error' => $creatingSheet['message'], 'erro' => $creatingSheet['erro']], 401);

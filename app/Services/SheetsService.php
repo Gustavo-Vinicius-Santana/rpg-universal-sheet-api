@@ -3,14 +3,17 @@
 namespace App\Services;
 
 use App\Repositories\SheetsRepository;
+use App\Repositories\ModelRepository;
 
 class SheetsService
 {
     private $sheetsRepository;
+    private $modelRepository;
 
-    public function __construct(SheetsRepository $sheetsRepository)
+    public function __construct(SheetsRepository $sheetsRepository, ModelRepository $modelRepository)
     {
         $this->sheetsRepository = $sheetsRepository;
+        $this->modelRepository = $modelRepository;
     }
 
     public function getUserSheets(String $uid)
@@ -72,6 +75,15 @@ class SheetsService
             'model_id' => $data['model_id'],
             'data' => $data['data']
         ];
+
+        $checkModel = $this->modelRepository->find($data['model_id']);
+        
+        if($checkModel == null){
+            return [
+                'success' => false,
+                'erro' => 'Modelo de ficha nao encontrado'
+            ];
+        }
 
         $creatingSheet = $this->sheetsRepository->create($newSheet);
 
