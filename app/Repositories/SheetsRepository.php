@@ -72,6 +72,14 @@ class SheetsRepository
             'data' => $data
         ];
 
+        $sheet = Sheet::where('id', $id)->update($updatedSheet);
+        if ($sheet == 0) {
+            return [
+                'success' => false,
+                'erro' => 'Ficha nao encontrada'
+            ];
+        }
+
         try{
             Sheet::where('id', $id)->update($updatedSheet);
             return [

@@ -108,7 +108,10 @@ class SheetsService
         $updatingSheet = $this->sheetsRepository->update($id, $data);
 
         if($updatingSheet['success'] === false){
-            return $updatingSheet['erro'];
+            return [
+                'success' => false,
+                'erro' => $updatingSheet['erro']
+            ];
         }
 
         $sheet = [
