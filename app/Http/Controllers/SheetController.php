@@ -94,7 +94,9 @@ class SheetController extends Controller
             'id' => 'required'
         ]);
 
-        $deletingSheet = $this->sheetsService->delete($request->id);
+        $firebaseUser = $request->attributes->get('firebase_user');
+
+        $deletingSheet = $this->sheetsService->delete($request->id, $firebaseUser->uid);
 
         if($deletingSheet['success'] === false){
             return response()->json(['error' => 'erro ao deletar ficha', 'erro' => $deletingSheet['erro']], 401);

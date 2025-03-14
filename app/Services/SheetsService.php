@@ -126,12 +126,24 @@ class SheetsService
         ];
     }
 
-    public function delete(String $uid)
+    public function delete(String $id, String $uid)
     {
-        $deletingSheet = $this->sheetsRepository->delete($uid);
+        $checkSheet = $this->sheetsRepository->getSheet($id, $uid);
+
+        if($checkSheet['sheet'] === null){
+            return [
+                'success' => false,
+                'erro' => 'ficha nao encontrada'
+            ];
+        }
+
+        $deletingSheet = $this->sheetsRepository->delete($id);
 
         if($deletingSheet['success'] === false){
-            return $deletingSheet['erro'];
+            return [
+                'success' => false,
+                'erro' => $deletingSheet['erro']
+            ];
         }
 
         return [
