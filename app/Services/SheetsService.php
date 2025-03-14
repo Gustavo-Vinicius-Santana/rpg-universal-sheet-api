@@ -69,30 +69,37 @@ class SheetsService
 
     public function create(array $data)
     {
-        $newSheet = [
-            'uid' => $data['user_id'],
-            'model_name' => $data['model_name'],
-            'model_id' => $data['model_id'],
-            'data' => $data['data']
-        ];
-
         $checkModel = $this->modelRepository->find($data['model_id']);
         
         if($checkModel == null){
             return [
                 'success' => false,
+                'message' => 'erro no cadastro',
                 'erro' => 'Modelo de ficha nao encontrado'
             ];
         }
 
+        $modelName = $checkModel->toArray()['system_name'];
+
+        $newSheet = [
+            'uid' => $data['user_id'],
+            'model_name' => $modelName,
+            'model_id' => $data['model_id'],
+            'data' => $data['data']
+        ];
+
         $creatingSheet = $this->sheetsRepository->create($newSheet);
 
         if($creatingSheet['success'] === false) {
-            return $creatingSheet['erro'];
+            return [
+                'success' => false,
+                'message' => 'Erro no cadstro',
+                'erro' => $creatingSheet['erro']
+            ];
         }
 
         $sheet = [
-            'model_name' => $creatingSheet['model_name'],
+            'model_name' => $modelName,
             'model_id' => $creatingSheet['system_id'],
             'data' => $creatingSheet['data']
         ];

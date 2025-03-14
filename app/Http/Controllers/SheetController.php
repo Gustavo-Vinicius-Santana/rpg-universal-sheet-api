@@ -47,7 +47,6 @@ class SheetController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'model_name' => 'required',
             'model_id' => 'required',
             'data' => 'required'
         ]);
@@ -62,7 +61,6 @@ class SheetController extends Controller
         ];
 
         $creatingSheet = $this->sheetsService->create($newSheet);
-        dd($creatingSheet);
 
         if($creatingSheet['success'] === false) {
             return response()->json(['error' => $creatingSheet['message'], 'erro' => $creatingSheet['erro']], 401);
