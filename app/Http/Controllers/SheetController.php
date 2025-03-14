@@ -78,7 +78,9 @@ class SheetController extends Controller
             'data' => 'required'
         ]);
 
-        $updatingSheet = $this->sheetsService->update($request->id, $request->data);
+        $firebaseUser = $request->attributes->get('firebase_user');
+
+        $updatingSheet = $this->sheetsService->update($request->id, $firebaseUser->uid, $request->data);
 
         if($updatingSheet['success'] === false){
             return response()->json(['error' => 'erro ao editar ficha', 'erro' => $updatingSheet['erro']], 401);

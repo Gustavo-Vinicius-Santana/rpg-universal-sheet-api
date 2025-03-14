@@ -103,8 +103,17 @@ class SheetsService
         ];
     }
 
-    public function update(int $id, array $data)
+    public function update(int $id, String $uid, array $data)
     {
+        $checkSheet = $this->sheetsRepository->getSheet($id, $uid);
+
+        if($checkSheet['sheet'] === null){
+            return [
+                'success' => false,
+                'erro' => 'ficha nao encontrada'
+            ];
+        }
+
         $updatingSheet = $this->sheetsRepository->update($id, $data);
 
         if($updatingSheet['success'] === false){
