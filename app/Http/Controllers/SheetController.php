@@ -29,13 +29,11 @@ class SheetController extends Controller
 
     public function getSheet(Request $request)
     {
-        $validated = $request->validate([
-            'id' => 'required'
-        ]);
+        $id = $request->route('id');
 
         $firebaseUser = $request->attributes->get('firebase_user');
 
-        $getSheet = $this->sheetsService->getSheet($request->id, $firebaseUser->uid);
+        $getSheet = $this->sheetsService->getSheet($id, $firebaseUser->uid);
 
         if($getSheet['success'] === false) {
             return response()->json(['error' => 'erro ao buscar ficha', 'erro' => $getSheet['erro']], 401);
@@ -90,13 +88,11 @@ class SheetController extends Controller
 
     public function delete(Request $request)
     {
-        $validated = $request->validate([
-            'id' => 'required'
-        ]);
+        $id = $request->route('id');
 
         $firebaseUser = $request->attributes->get('firebase_user');
 
-        $deletingSheet = $this->sheetsService->delete($request->id, $firebaseUser->uid);
+        $deletingSheet = $this->sheetsService->delete($id, $firebaseUser->uid);
 
         if($deletingSheet['success'] === false){
             return response()->json(['error' => 'erro ao deletar ficha', 'erro' => $deletingSheet['erro']], 401);
