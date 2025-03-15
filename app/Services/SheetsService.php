@@ -16,6 +16,16 @@ class SheetsService
         $this->modelRepository = $modelRepository;
     }
 
+    /**
+     * Retrieves all RPG sheets associated with a user by their UID.
+     *
+     * @param String $uid The UID of the user to retrieve.
+     *
+     * @return array An array containing a 'success' key with a boolean value
+     *               indicating the success of the operation, and a 'sheets' key
+     *               with an array of objects containing the retrieved RPG sheets,
+     *               except for the fields 'player_uid', 'created_at', and 'updated_at'.
+     */
     public function getUserSheets(String $uid)
     {
         $seekingSheets = $this->sheetsRepository->getUserSheets($uid);
@@ -34,6 +44,17 @@ class SheetsService
         ];
     }
 
+    /**
+     * Retrieves an RPG sheet by its ID and the UID of the owning user.
+     *
+     * @param int $id The ID of the sheet to retrieve.
+     * @param String $uid The UID of the user who owns the sheet.
+     *
+     * @return array An array containing a 'success' key with a boolean value
+     *               indicating the success of the operation, and a 'sheet' key
+     *               with an object containing the retrieved RPG sheet information,
+     *               except for the fields 'player_uid', 'created_at', and 'updated_at'.
+     */
     public function getSheet(int $id, String $uid)
     {
         $seekingSheet = $this->sheetsRepository->getSheet($id, $uid);
@@ -67,6 +88,22 @@ class SheetsService
         ];
     }
 
+    /**
+     * Creates a new RPG sheet based on the provided data.
+     *
+     * Checks if the given RPG sheet model exists and, if so,
+     * creates a new sheet with the provided data. If the model does not exist,
+     * returns an array with a 'success' key set to false and an 'error' key
+     * containing an error message.
+     *
+     * @param array $data An associative array containing the information
+     *                    of the sheet to be created. It must contain the keys
+     *                    'user_id', 'model_id', and 'data'.
+     *
+     * @return array An array containing a 'success' key with a boolean value
+     *               indicating the success of the operation, and a 'sheet' key
+     *               with an object containing the information of the created RPG sheet.
+     */
     public function create(array $data)
     {
         $checkModel = $this->modelRepository->find($data['model_id']);
@@ -110,6 +147,22 @@ class SheetsService
         ];
     }
 
+    /**
+     * Updates an existing RPG sheet with the provided data.
+     *
+     * Checks if the sheet exists for the given ID and user UID.
+     * If the sheet is found, it attempts to update the sheet with
+     * the new data provided. Returns a success response with the
+     * updated sheet data or an error message if the update fails.
+     *
+     * @param int $id The ID of the sheet to update.
+     * @param String $uid The UID of the user who owns the sheet.
+     * @param array $data An associative array containing the updated sheet data.
+     *
+     * @return array An associative array containing the success status
+     *               and the updated sheet data or an error message.
+     */
+
     public function update(int $id, String $uid, array $data)
     {
         $checkSheet = $this->sheetsRepository->getSheet($id, $uid);
@@ -142,6 +195,21 @@ class SheetsService
         ];
     }
 
+    /**
+     * Deletes an existing RPG sheet with the given ID and user UID.
+     *
+     * Checks if the sheet exists for the given ID and user UID.
+     * If the sheet is found, it attempts to delete the sheet. Returns a success
+     * response with a message indicating the result of the deletion or an
+     * error message if the deletion fails.
+     *
+     * @param String $id The ID of the sheet to delete.
+     * @param String $uid The UID of the user who owns the sheet.
+     *
+     * @return array An associative array containing the success status and a
+     *               message indicating the result of the deletion or an error
+     *               message.
+     */
     public function delete(String $id, String $uid)
     {
         $checkSheet = $this->sheetsRepository->getSheet($id, $uid);
