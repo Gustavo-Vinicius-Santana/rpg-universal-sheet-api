@@ -23,6 +23,12 @@ class FirebaseAuthController extends Controller
         $this->authService = $authService;
     }
 
+    /**
+     * Create a new user in the Firebase Authentication
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function register(Request $request)
     {
         $request->validate([
@@ -47,6 +53,12 @@ class FirebaseAuthController extends Controller
         }
     }
 
+    /**
+     * Log in a user using Firebase Authentication
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function login(Request $request)
     {
         $request->validate([
@@ -63,6 +75,12 @@ class FirebaseAuthController extends Controller
         return response()->json(['token' => $signInResult['token']], 200);
     }
 
+    /**
+     * Change the password of the user
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function changePassword(Request $request)
     {
         $request->validate([
@@ -80,6 +98,18 @@ class FirebaseAuthController extends Controller
         return response()->json(['message' => $resultEmail['message']], 200);
     }
 
+/**
+ * Change the email of the authenticated user
+ *
+ * This method validates the new email provided by the request, retrieves
+ * the authenticated user's UID from the request attributes, and attempts
+ * to update the user's email in Firebase Authentication. If the update
+ * is successful, a success message is returned. If the update fails or
+ * if the user is not authenticated, an error message is returned.
+ *
+ * @param Request $request
+ * @return \Illuminate\Http\JsonResponse
+ */
     public function changeEmail(Request $request)
     {
         $request->validate([

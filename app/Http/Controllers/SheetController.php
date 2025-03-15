@@ -14,6 +14,12 @@ class SheetController extends Controller
         $this->sheetsService = $sheetsService;
     }
 
+    /**
+     * Retrieves the sheets associated with the authenticated user.
+     *
+     * @param Request $request The HTTP request object containing the authenticated user's information.
+     * @return \Illuminate\Http\JsonResponse A JSON response containing the user's sheets or an error message on failure.
+     */
     public function getUserSheets(Request $request)
     {
         $firebaseUser = $request->attributes->get('firebase_user');
@@ -27,6 +33,12 @@ class SheetController extends Controller
         return response()->json(['sheets' => $getUserSheets['sheets']], 200);
     }
 
+    /**
+     * Retrieves a sheet by its ID associated with the authenticated user.
+     *
+     * @param Request $request The HTTP request object containing the authenticated user's information and the sheet ID.
+     * @return \Illuminate\Http\JsonResponse A JSON response containing the sheet or an error message on failure.
+     */
     public function getSheet(Request $request)
     {
         $id = $request->route('id');
@@ -42,6 +54,18 @@ class SheetController extends Controller
         return response()->json(['sheet' => $getSheet['sheet']], 200);
     }
 
+    /**
+     * Creates a new sheet based on the provided request data.
+     *
+     * Validates the request to ensure 'model_id' and 'data' are provided,
+     * retrieves the authenticated user's UID, and constructs a new sheet
+     * data structure. Attempts to create the sheet using the SheetsService.
+     * If the creation is unsuccessful, returns an error response; otherwise,
+     * returns a success response with the created sheet data.
+     *
+     * @param Request $request The HTTP request object containing the sheet data and authenticated user's information.
+     * @return \Illuminate\Http\JsonResponse A JSON response containing the created sheet or an error message on failure.
+     */
     public function create(Request $request)
     {
         $request->validate([
@@ -67,6 +91,18 @@ class SheetController extends Controller
         return response()->json(['message' => 'ficha criada com sucesso', 'sheet' => $creatingSheet['sheet']], 200);
     }
 
+    /**
+     * Updates a sheet based on the provided request data.
+     *
+     * Validates the request to ensure 'id' and 'data' are provided,
+     * retrieves the authenticated user's UID, and constructs a new sheet
+     * data structure. Attempts to update the sheet using the SheetsService.
+     * If the update is unsuccessful, returns an error response; otherwise,
+     * returns a success response with the updated sheet data.
+     *
+     * @param Request $request The HTTP request object containing the sheet data and authenticated user's information.
+     * @return \Illuminate\Http\JsonResponse A JSON response containing the updated sheet or an error message on failure.
+     */
     public function update(Request $request)
     {
         $validated = $request->validate([
@@ -86,6 +122,17 @@ class SheetController extends Controller
         return response()->json(['message' => 'ficha editada com sucesso', 'sheet' => $updatingSheet['updatedSheet']], 200);
     }
 
+    /**
+     * Deletes a sheet based on the provided request data.
+     *
+     * Retrieves the authenticated user's UID and the sheet ID from the route,
+     * and attempts to delete the sheet using the SheetsService. If the deletion
+     * is unsuccessful, returns an error response; otherwise, returns a success
+     * response.
+     *
+     * @param Request $request The HTTP request object containing the sheet ID and authenticated user's information.
+     * @return \Illuminate\Http\JsonResponse A JSON response containing an error message on failure or a success message on success.
+     */
     public function delete(Request $request)
     {
         $id = $request->route('id');
