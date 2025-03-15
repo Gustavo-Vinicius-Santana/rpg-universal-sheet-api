@@ -7,12 +7,12 @@ use App\Models\SistemRpgModelsSheet;
 class ModelRepository
 {
     /**
-     * Encontra um modelo de ficha de RPG por seu ID.
+     * Finds an RPG sheet model by its ID.
      *
-     * @param int $id O ID do modelo de ficha a ser encontrado.
+     * @param int $id The ID of the sheet model to be found.
      *
-     * @return SistemRpgModelsSheet|null O modelo de ficha encontrado,
-     *                                    ou null se n o for encontrado.
+     * @return SistemRpgModelsSheet|null The found sheet model,
+     *                                    or null if not found.
      */
     public function find(int $id)
     {
