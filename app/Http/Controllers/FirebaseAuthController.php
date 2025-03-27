@@ -31,14 +31,6 @@ class FirebaseAuthController extends Controller
      */
     public function register(Request $request)
     {
-        $request->validate([
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'type_acount' => 'required',
-            'email' => 'required|email',
-            'password' => 'required|min:6'
-        ]);
-
         $newUser = [
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
@@ -61,11 +53,6 @@ class FirebaseAuthController extends Controller
      */
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|min:6'
-        ]);
-
         $signInResult = $this->authService->login($request->email, $request->password);
 
         if ($signInResult['success'] === false) {
@@ -83,10 +70,6 @@ class FirebaseAuthController extends Controller
      */
     public function changePassword(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-        ]);
-
         $userEmail = $request->email;
 
         $resultEmail = $this->authService->changePassword($userEmail);
@@ -112,10 +95,6 @@ class FirebaseAuthController extends Controller
  */
     public function changeEmail(Request $request)
     {
-        $request->validate([
-            'newEmail' => 'required|email',
-        ]);
-
         $userEmail = $request->newEmail;
         $firebaseUser = $request->attributes->get('firebase_user');
 

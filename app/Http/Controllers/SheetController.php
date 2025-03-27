@@ -68,11 +68,6 @@ class SheetController extends Controller
      */
     public function create(Request $request)
     {
-        $request->validate([
-            'model_id' => 'required',
-            'data' => 'required'
-        ]);
-
         $firebaseUser = $request->attributes->get('firebase_user');
 
         $newSheet = [
@@ -105,11 +100,6 @@ class SheetController extends Controller
      */
     public function update(Request $request)
     {
-        $validated = $request->validate([
-            'id' => 'required',
-            'data' => 'required'
-        ]);
-
         $firebaseUser = $request->attributes->get('firebase_user');
 
         $updatingSheet = $this->sheetsService->update($request->id, $firebaseUser->uid, $request->data);
