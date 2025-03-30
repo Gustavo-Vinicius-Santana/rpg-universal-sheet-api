@@ -30,7 +30,35 @@ class UserService
         // Obtém o usuário Firebase do middleware
         $firebaseUser = $request->attributes->get('firebase_user');
 
-        return $firebaseUser;
+        $bdUser = $this->repository->getUser($firebaseUser->uid);
+        
+        if ($bdUser['success'] === false) {
+            return [
+                'success' => false,
+                'message' => 'erro ao buscar usuario',
+                'erro' => $bdUser['erro']
+            ];
+        }
+
+        if ($bdUser['user'] === null) {
+            return [
+                'success' => false,
+                'message' => 'usuario não encontrado'
+            ];
+        }
+
+        $user = [
+            'uid' => $firebaseUser->uid,
+            'first_name' => $bdUser['user']['first_name'],
+            'last_name' => $bdUser['user']['last_name'],
+            'type_acount' => $bdUser['user']['type_acount'],
+            'email' => $firebaseUser->email,
+        ];
+
+        return [
+            'success' => true,
+            'user' => $user
+        ];
     }
 
     /**

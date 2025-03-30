@@ -25,13 +25,13 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $firebaseUser = $this->userService->index($request);
+        $user = $this->userService->index($request);
 
-        if ($firebaseUser) {
-            return response()->json(['user' => $firebaseUser]);
+        if ($user['success'] === false) {
+            return response()->json(['error' => $user['message'], 'erro' => $user['erro']], 401);
         }
 
-        return response()->json(['message' => 'Usuário não encontrado'], 404);
+        return response()->json(['user' => $user['user']], 200);
     }
 
     /**

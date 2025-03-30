@@ -6,6 +6,22 @@ use App\Models\User;
 
 class UserRepository
 {
+    public function getUser(String $uid)
+    {
+        $user =  User::where('uid', $uid)->first();
+
+        try{
+            return [
+                'success' => true,
+                'user' => $user ? $user->toArray() : null
+            ];
+        } catch(\Exception $e){
+            return [
+                'success' => false,
+                'erro' => $e->getMessage()
+            ];
+        }
+    }
     /**
      * Create a new user record in the database.
      *
